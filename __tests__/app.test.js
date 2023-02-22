@@ -33,42 +33,42 @@ describe("GET /api/categories", () => {
     });
 });
 
-// describe('GET /api/reviews/id', () =>{
-//     test('200 responds with review with specified id', () => {
-//         return request(app)
-//         .get('/api/reviews?review_id=1')
+// describe('GET /api/reviews/:review_id', () => {
+//     it('responds with the correct review object', () => {
+//       return request(app)
+//         .get('/api/reviews/1')
 //         .expect(200)
 //         .then(({ body }) => {
-//             const { reviews } = body;
-//             expect(reviews).toHaveLength(1);
-//             reviews.forEach((review) => {
-//                 expect(review).toHaveProperty('review_id', 1);
-//             });
+//           expect(body.review).toMatchObject({
+//             review_id: 1,
+//             title: 'Agricola',
+//             category: 'strategy',
+//             designer: 'Uwe Rosenberg',
+//             owner: 'mallionaire',
+//             review_body:
+//               "Farmyard fun!",
+//             review_img_url:
+//               'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+//             created_at: expect.any(String),
+//             votes: 0,
+//             comment_count: '1',
+//           });
 //         });
 //     });
-// });
-
-// describe("GET /api/reviews", () => {
-//     test("200: responds with array of review objects", () => {
-//         return request(app)
-//         .get('/api/reviews')
-//         .expect(200)
+//     it('responds with a 404 error if review_id is not found', () => {
+//       return request(app)
+//         .get('/api/reviews/999')
+//         .expect(404)
 //         .then(({ body }) => {
-//             const { reviews } = body;
-//             expect(reviews.length).toBe(13);
-//             console.log(reviews);
-//             reviews.forEach((review) => {
-//                 console.log(review.comment_count);
-//                 expect(review).toHaveProperty('owner', expect.any(String));
-//                 expect(review).toHaveProperty('title', expect.any(String));
-//                 expect(review).toHaveProperty('review_id', expect.any(Number));
-//                 expect(review).toHaveProperty('category', expect.any(String));
-//                 expect(review).toHaveProperty('review_img_url', expect.any(String));
-//                 expect(review.created_at instanceof Date);
-//                 expect(review).toHaveProperty('votes', expect.any(Number));
-//                 expect(review).toHaveProperty('designer', expect.any(String));
-//                 expect(review).toHaveProperty('comment_count', expect.any(String));
-//             });
+//           expect(body.msg).toBe('Review with review_id 999 not found');
+//         });
+//     });
+//     it('responds with a 400 error if review_id is not a number', () => {
+//       return request(app)
+//         .get('/api/reviews/not-a-number')
+//         .expect(400)
+//         .then(({ body }) => {
+//             expect(body.msg).toBe('Invalid review ID');
 //         });
 //     });
 // });
