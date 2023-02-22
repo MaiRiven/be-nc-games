@@ -28,27 +28,47 @@ describe("GET /api/categories", () => {
             categories.forEach((category) => {
                 expect(category).toHaveProperty('slug', expect.any(String));
                 expect(category).toHaveProperty('description', expect.any(String));
-        })
-    })
-})
-})
+            });
+        });
+    });
+});
 
-//happy request
-//bad requests
-//400, 404
-
-
-// describe("/api/categories", () =>{
-//     test('200: GET responds with category objects with slug and description properties', () => {
+// describe('GET /api/reviews/id', () =>{
+//     test('200 responds with review with specified id', () => {
 //         return request(app)
-//         .get("/api/categories")
+//         .get('/api/reviews?review_id=1')
 //         .expect(200)
 //         .then(({ body }) => {
-//             const { categories } = body;
-//             console.log(categories);
-//             categories.forEeach((category) => {
-//                 expect(response.body.categories)
-//             })
-//         })
-//     })
+//             const { reviews } = body;
+//             expect(reviews).toHaveLength(1);
+//             reviews.forEach((review) => {
+//                 expect(review).toHaveProperty('review_id', 1);
+//             });
+//         });
+//     });
+// });
+
+// describe("GET /api/reviews", () => {
+//     test("200: responds with array of review objects", () => {
+//         return request(app)
+//         .get('/api/reviews')
+//         .expect(200)
+//         .then(({ body }) => {
+//             const { reviews } = body;
+//             expect(reviews.length).toBe(13);
+//             console.log(reviews);
+//             reviews.forEach((review) => {
+//                 console.log(review.comment_count);
+//                 expect(review).toHaveProperty('owner', expect.any(String));
+//                 expect(review).toHaveProperty('title', expect.any(String));
+//                 expect(review).toHaveProperty('review_id', expect.any(Number));
+//                 expect(review).toHaveProperty('category', expect.any(String));
+//                 expect(review).toHaveProperty('review_img_url', expect.any(String));
+//                 expect(review.created_at instanceof Date);
+//                 expect(review).toHaveProperty('votes', expect.any(Number));
+//                 expect(review).toHaveProperty('designer', expect.any(String));
+//                 expect(review).toHaveProperty('comment_count', expect.any(String));
+//             });
+//         });
+//     });
 // });
