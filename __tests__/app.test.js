@@ -4,6 +4,8 @@ const request = require('supertest');
 const app = require('../app');
 const seed = require('../db/seeds/seed');
 
+
+
 beforeEach(() => seed(data))
 afterAll(() => db.end())
 
@@ -43,7 +45,6 @@ describe("GET /api/reviews", () => {
             const { reviews } = body;
             expect(reviews.length).toBe(13);
             reviews.forEach((review) => {
-                console.log(review.comment_count);
                 expect(review).toHaveProperty('owner', expect.any(String));
                 expect(review).toHaveProperty('title', expect.any(String));
                 expect(review).toHaveProperty('review_id', expect.any(Number));
@@ -56,4 +57,13 @@ describe("GET /api/reviews", () => {
             });
         });
     });
+    test('responses are ordered by date', () => {
+        return request(app)
+          .get('/api/reviews')
+          .expect(200)
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(reviews).toBeSortedBy('created_at', {descending: false});
+          });
+      });
 });
