@@ -4,8 +4,6 @@ const request = require('supertest');
 const app = require('../app');
 const seed = require('../db/seeds/seed');
 
-
-
 beforeEach(() => seed(data))
 afterAll(() => db.end())
 
@@ -18,7 +16,7 @@ describe('categories bad paths', () => {
             expect(body.msg).toBe('Path not found! >:(')
         });
     });
-})
+});
 
 describe("GET /api/categories", () => {
     test("200: responds with array of category objects", () => {
@@ -67,3 +65,39 @@ describe("GET /api/reviews", () => {
           });
       });
 });
+
+describe('GET /api/reviews/:review_id', () => {
+    test('responds with the correct review object', () => {
+      return request(app)
+        .get('/api/reviews/1')
+        .expect(200)
+        .then(({ body }) => {
+            const { review } = body;
+            expect(review).toHaveProperty('owner', expect.any(String));
+            expect(review).toHaveProperty('title', expect.any(String));
+            expect(review).toHaveProperty('review_id', expect.any(Number));
+            expect(review).toHaveProperty('category', expect.any(String));
+            expect(review).toHaveProperty('review_img_url', expect.any(String));
+            expect(review.created_at instanceof Date);
+            expect(review).toHaveProperty('votes', expect.any(Number));
+            expect(review).toHaveProperty('designer', expect.any(String)); 
+            expect(review).toHaveProperty('review_body', expect.any(String)); 
+          });
+        });
+    });
+    test('responds with a 404 error if review_id is not found', () => {
+      return request(app)
+        .get('/api/reviews/99')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Review not found!');
+        });
+    });
+    test('responds with a 400 error if review_id is not a number', () => {
+      return request(app)
+        .get('/api/reviews/not-a-number')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Invalid input');
+        });
+    });
