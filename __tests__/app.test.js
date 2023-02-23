@@ -99,7 +99,6 @@ describe('GET /api/reviews/:review_id', () => {
         .get('/api/reviews/not-a-number')
         .expect(400)
         .then(({ body }) => {
-            console.log("tests");
             expect(body.msg).toBe('Invalid input');
         });
     });

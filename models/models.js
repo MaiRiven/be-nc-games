@@ -33,7 +33,6 @@ const fetchReviewById = (reviewId) => {
             msg: 'Review not found!'
         });
       }
-      console.log(review);
       return review;
     });
   };
