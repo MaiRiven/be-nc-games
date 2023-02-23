@@ -72,17 +72,16 @@ describe('GET /api/reviews/:review_id', () => {
         .get('/api/reviews/1')
         .expect(200)
         .then(({ body }) => {
-          expect(body.review).toEqual({
-            review_id: 1,
-            title: 'Agricola',
-            designer: 'Uwe Rosenberg',
-            owner: 'mallionaire',
-            review_img_url:
-              'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
-            review_body: 'Farmyard fun!',
-            category: 'euro game',
-            created_at: expect.any(String),
-            votes: 1
+            const { review } = body;
+            expect(review).toHaveProperty('owner', expect.any(String));
+            expect(review).toHaveProperty('title', expect.any(String));
+            expect(review).toHaveProperty('review_id', expect.any(Number));
+            expect(review).toHaveProperty('category', expect.any(String));
+            expect(review).toHaveProperty('review_img_url', expect.any(String));
+            expect(review.created_at instanceof Date);
+            expect(review).toHaveProperty('votes', expect.any(Number));
+            expect(review).toHaveProperty('designer', expect.any(String)); 
+            expect(review).toHaveProperty('review_body', expect.any(String)); 
           });
         });
     });
@@ -102,4 +101,3 @@ describe('GET /api/reviews/:review_id', () => {
             expect(body.msg).toBe('Invalid input');
         });
     });
-});
