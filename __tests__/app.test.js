@@ -57,13 +57,13 @@ describe("GET /api/reviews", () => {
     });
     test('responses are ordered by date', () => {
         return request(app)
-          .get('/api/reviews')
-          .expect(200)
-          .then(({ body }) => {
-            const { reviews } = body;
-            expect(reviews).toBeSortedBy('created_at', {descending: false});
-          });
-      });
+        .get('/api/reviews')
+        .expect(200)
+        .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy('created_at', {descending: false});
+        });
+    });
 });
 
 describe('GET /api/reviews/:review_id', () => {
@@ -90,14 +90,59 @@ describe('GET /api/reviews/:review_id', () => {
         .get('/api/reviews/99')
         .expect(404)
         .then(({ body }) => {
-            expect(body.msg).toBe('Review not found!');
+        expect(body.msg).toBe('Review not found!');
         });
     });
     test('responds with a 400 error if review_id is not a number', () => {
-      return request(app)
+        return request(app)
         .get('/api/reviews/not-a-number')
         .expect(400)
         .then(({ body }) => {
-            expect(body.msg).toBe('Invalid input');
+        expect(body.msg).toBe('Invalid input');
+    });
+});
+
+describe('GET /api/reviews/:review_id/comments', () => {
+    test('200: responds with an array of comments for the given review_id', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then(({ body }) => {
+            const { comments } = body;
+            expect(Array.isArray(comments)).toBe(true);
+            comments.forEach((comment) => {
+                expect(comment).toHaveProperty('comment_id', expect.any(Number));
+                expect(comment).toHaveProperty('votes', expect.any(Number));
+                expect(comment).toHaveProperty('created_at', expect.any(String));
+                expect(comment).toHaveProperty('author', expect.any(String));
+                expect(comment).toHaveProperty('body', expect.any(String));
+                expect(comment).toHaveProperty('review_id', 2);
+            });
         });
     });
+    test('responds with a 404 error if review_id is not found', () => {
+        return request(app)
+        .get('/api/reviews/99/comments')
+        .expect(404)
+        .then(({ body }) => {
+        expect(body.msg).toBe('Review not found!');
+        });
+    });
+    test('responds with a 400 error if review_id is not a number', () => {
+        return request(app)
+        .get('/api/reviews/not-a-number/comments')
+        .expect(400)
+        .then(({ body }) => {
+        expect(body.msg).toBe('Invalid input');
+        });
+    });
+    test('responds with an array of comments for the given review_id in most recent order', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeSortedBy('created_at', {descending: true});
+        });
+    });
+});

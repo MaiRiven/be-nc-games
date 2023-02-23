@@ -22,9 +22,8 @@ const fetchReviews = () => {
 };
 
 const fetchReviewById = (reviewId) => {
-   
     return db.query(
-      `SELECT * FROM reviews WHERE review_id = $1`, [reviewId])
+      `SELECT * FROM reviews WHERE review_id = $1;`, [reviewId])
       .then((res) => {
       const review = res.rows[0];
       if(!review) {
@@ -37,4 +36,20 @@ const fetchReviewById = (reviewId) => {
     });
   };
 
-module.exports = { fetchCategories, fetchReviews, fetchReviewById };
+const fetchCommentsByReviewId = (reviewId) => {
+    return db.query(
+      `SELECT * FROM comments WHERE comments.review_id = $1
+      ORDER BY comments.created_at DESC;`, [reviewId])
+      .then((res) => {
+        const comments = res.rows;
+        if (comments.length === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "Review not found!",
+          });
+        }
+      return comments;
+    });
+};
+
+module.exports = { fetchCategories, fetchReviews, fetchReviewById, fetchCommentsByReviewId };
