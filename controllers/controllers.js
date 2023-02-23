@@ -1,4 +1,4 @@
-const { fetchCategories, fetchReviewById } = require('../models/models.js');
+const { fetchCategories, fetchReviewById, fetchReviews } = require('../models/models.js');
 
 const getCategories = (req, res, next) => {
     fetchCategories()
@@ -8,17 +8,21 @@ const getCategories = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-//link to app and models
-//use review id with new function 
-//send back body of review
-//catch errors
-const getReviewById = (req, res, next) => {
+const getReviews = (req, res, next) => {
+    fetchReviews()
+    .then(reviews => {
+        res.status(200).send({ reviews });
+    })
+    .catch((err) => console.log(err));
+};
+
+const getReviewById = (req, res, next) => { 
     const reviewId = req.params.review_id;
     fetchReviewById(reviewId)
     .then(review => {
         res.status(200).send({ review });
     })
-    .catch((err) => console.log(err));
-};
+    .catch((err) => next(err));
+    };
 
-module.exports = { getCategories, getReviewById };
+module.exports = { getCategories, getReviews, getReviewById };
