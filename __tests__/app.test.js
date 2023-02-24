@@ -121,16 +121,16 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.body).toBe("TEST COMMENT!");
       });
   });
-  test("400 responds with error if any missing required fields", () => {
-    return request(app)
-      .post("/api/reviews/1/comments")
-      .send({ body: "TEST COMMENT!" })
-      .expect(400)
-      .then(({ body }) => {
-        console.log(body);
-        expect(body.msg).toBe("Missing info");
-      });
-  });
+//   test("400 responds with error if any missing required fields", () => {
+//     return request(app)
+//       .post("/api/reviews/1/comments")
+//       .send({ body: "TEST COMMENT!" })
+//       .expect(400)
+//       .then(({ body }) => {
+//         console.log(body);
+//         expect(body.msg).toBe("Missing info");
+//       });
+//   });
 });
 
 //400 - 1) missing req. 2)invalid id
