@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCategories, getReviews, getReviewById } = require('./controllers/controllers.js');
+const { getCategories, getReviews, getReviewById, postComment } = require('./controllers/controllers.js');
 const { handle500Statuses, handleCustomeErrors, handlePsqlErrors } = require('./controllers/error-handling');
 
 const app = express();
@@ -11,6 +11,8 @@ app.get('/api/categories', getCategories);
 app.get('/api/reviews', getReviews);
 
 app.get('/api/reviews/:review_id', getReviewById);
+
+app.post('/api/reviews/:review_id/comments', postComment);
 
 app.use(handlePsqlErrors);
 app.use(handleCustomeErrors);

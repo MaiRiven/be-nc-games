@@ -37,4 +37,16 @@ const fetchReviewById = (reviewId) => {
     });
   };
 
-module.exports = { fetchCategories, fetchReviews, fetchReviewById };
+  const writeComment = (reviewId, username, comment) => {
+    return db
+      .query(
+        `INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
+        [reviewId, username, comment]
+      )
+      .then((res) => {
+        return comment;
+      });
+  };
+  
+  
+module.exports = { fetchCategories, fetchReviews, fetchReviewById, writeComment };

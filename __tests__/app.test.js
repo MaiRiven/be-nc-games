@@ -101,3 +101,15 @@ describe('GET /api/reviews/:review_id', () => {
             expect(body.msg).toBe('Invalid input');
         });
     });
+
+// describe('POST /api/reviews/:review_id/comments', () => {
+//     test('returns the posted comment with status 201', () => {
+//         return request(app)
+//           .post('/api/reviews/1/comments')
+//           .send({ username: 'bainesface', body: 'TEST COMMENT!' })
+//           .expect(201)
+//           .then(({ body }) => {
+//         expect(body.body).toBe('TEST COMMENT!');
+//           });
+//       });
+// });
