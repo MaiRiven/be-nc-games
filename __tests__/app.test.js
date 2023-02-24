@@ -155,3 +155,50 @@ describe('GET /api/reviews/:review_id/comments', () => {
         });
     });
 });
+
+
+// describe.only('PATCH /api/reviews/:review_id', () => {
+//     test('200, returns the updated review object', () => {
+//         return request(app)
+//         .patch('/api/reviews/2')
+//         .send({inc_votes: 10})
+//         .expect(200)
+//         .then((res) => {
+//             expect(res.body.review).toMatchObject({
+//                 review_id: 2,
+//                 votes: 16
+//             });
+//         });
+//     });
+//     test("200, returns the updated review object when inc_votes is negative", () => {
+//         return request(app)
+//         .patch("/api/reviews/2")
+//         .send({ inc_votes: -3})
+//         .expect(200)
+//         .then((res) => {
+//             expect(res.body.review).toMatchObject({
+//                 review_id: 2,
+//                 votes: 3
+//             });
+//         });
+//     });
+//     test('status:404, returns an error message when review_id does not exist', () => {
+//         return request(app)
+//           .patch('/api/reviews/999')
+//           .send({ inc_votes: 10 })
+//           .expect(404)
+//           .then((res) => {
+//             expect(res.body.msg).toBe('Review not found');
+//           });
+//       });
+    
+//       test('status:400, returns an error message when inc_votes is missing', () => {
+//         return request(app)
+//           .patch('/api/reviews/2')
+//           .send({})
+//           .expect(400)
+//           .then((res) => {
+//             expect(res.body.msg).toBe('Bad Request');
+//           });
+//       });
+// });

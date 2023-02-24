@@ -1,4 +1,4 @@
-const { fetchCategories, fetchReviewById, fetchReviews, fetchCommentsByReviewId } = require('../models/models.js');
+const { fetchCategories, fetchReviewById, fetchReviews, fetchCommentsByReviewId, updateVotes } = require('../models/models.js');
 
 const getCategories = (req, res, next) => {
     fetchCategories()
@@ -36,4 +36,15 @@ const getCommentsByReviewId = (req, res, next) => {
     .catch((err) => next(err));
   };      
 
-module.exports = { getCategories, getReviews, getReviewById, getCommentsByReviewId };
+
+ const increaseVotes = (req, res, next) => {
+    const { review_id } = req.params;
+    const { inc_votes } = req.body;
+    updateVotes(review_id, inc_votes)
+    .then((updatedReview) => {
+        res.status(200).json({ review: updatedReview });
+    })
+    .catch(next);
+ }; 
+
+module.exports = { getCategories, getReviews, getReviewById, getCommentsByReviewId, increaseVotes };
