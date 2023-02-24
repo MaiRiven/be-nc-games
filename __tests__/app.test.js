@@ -87,7 +87,7 @@ describe("GET /api/reviews/:review_id", () => {
 });
 test("responds with a 404 error if review_id is not found", () => {
   return request(app)
-    .get("/api/reviews/99")
+    .get("/api/reviews/999999")
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Review not found!");
@@ -121,32 +121,40 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.body).toBe("TEST COMMENT!");
       });
   });
-//   test.only("400 responds with error if any missing required fields", () => {
-//     return request(app)
-//       .post("/api/reviews/1/comments")
-//       .send({username: null, body: "TEST COMMENT!" })
-//       .expect(400)
-//       .then(({ body }) => {
-//         console.log(body, body.body);
-//         expect(body.msg).toBe("Missing info");
-//       });
-//   });
-//   test("404 responds with error if review_id does not exist", () => {
-//     return request(app)
-//       .post("/api/reviews/999/comments")
-//       .send({ username: "bainesface", body: "TEST_COMMENT" })
-//       .expect(404)
-//       .then(({ body }) => {
-//         expect(body.msg).toBe("Review not found");
-//       });
-//   });
-//   test("404 responds with error if username does not exist", () => {
-//     return request(app)
-//       .post("/api/reviews/1/comments")
-//       .send({ username: "nonexistent_user", body: "TEST_COMMENT" })
-//       .expect(404)
-//       .then(({ body }) => {
-//         expect(body.msg).toBe("");
-//       });
-//   });
+  test("400 responds with error if any missing required fields", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ body: "TEST COMMENT!" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing info");
+      });
+  });
+  test("404 responds with error if review_id does not exist", () => {
+    return request(app)
+      .post("/api/reviews/999/comments")
+      .send({ username: "bainesface", body: "TEST_COMMENT" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Review doesn't exist");
+      });
+  });
+  test("404 responds with error if username does not exist", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "nonexistent_user", body: "TEST_COMMENT" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username does not exist");
+      });
+  });
+  test("400 responds with error if id is not a string", () => {
+    return request(app)
+      .post("/api/reviews/one/comments")
+      .send({username: "bainesface", body: "TEST COMMENT!" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
 });

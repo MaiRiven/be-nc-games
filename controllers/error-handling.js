@@ -7,10 +7,21 @@ exports.handleCustomeErrors = (err, req, res, next) => {
 exports.handlePsqlErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Invalid input" });
-  } else next(err);
+  } else if (err.code === "23503" && err.detail === 'Key (review_id)=(999) is not present in table "reviews".') {
+    res.status(404).send({ msg: "Review doesn't exist"})
+  }
+  else if (err.code === "23503") {
+        res.status(404).send({ msg: "Username does not exist"})
+      } else if (err.code = "23502") {
+        res.status(400).send({ msg: "Missing info"});
+      }
+      else {  
+        next(err);
+      }
 };
 
 exports.handle500Statuses = (error, req, res, next) => {
+  console.log(err, "500 status");
   console.log(error);
   res.status(500).send({ msg: "500 error" });
 };

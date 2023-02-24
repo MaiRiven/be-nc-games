@@ -26,8 +26,8 @@ app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
-app.use(handlePsqlErrors);
 app.use(handleCustomeErrors);
+app.use(handlePsqlErrors);
 app.use(handle500Statuses);
 
 app.all("*", (req, res) => {

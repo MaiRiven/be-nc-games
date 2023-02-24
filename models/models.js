@@ -27,14 +27,14 @@ const fetchReviewById = (reviewId) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1`, [reviewId])
     .then((res) => {
-      const review = res.rows[0];
-      if (!review) {
+      const review = res.rows;
+      if (review.length === 0) {
         return Promise.reject({
           status: 404,
           msg: "Review not found!",
         });
       }
-      return review;
+      return review[0];
     });
 };
 const fetchCommentsByReviewId = (reviewId) => {
@@ -51,12 +51,6 @@ const fetchCommentsByReviewId = (reviewId) => {
 };
 
 const writeComment = (id, body) => {
-  if (!body.body || !body.username) {
-    Promise.reject({
-      status: 400,
-      msg: "Missing info",
-    });
-  }
   const username = body.username;
   const comment = body.body;
   return db
