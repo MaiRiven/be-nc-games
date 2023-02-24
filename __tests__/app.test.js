@@ -121,18 +121,32 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.body).toBe("TEST COMMENT!");
       });
   });
-//   test("400 responds with error if any missing required fields", () => {
-//     return request(app)
-//       .post("/api/reviews/1/comments")
-//       .send({ body: "TEST COMMENT!" })
-//       .expect(400)
-//       .then(({ body }) => {
-//         console.log(body);
-//         expect(body.msg).toBe("Missing info");
-//       });
-//   });
+  test.only("400 responds with error if any missing required fields", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({username: null, body: "TEST COMMENT!" })
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body, body.body);
+        expect(body.msg).toBe("Missing info");
+      });
+  });
+  test("404 responds with error if review_id does not exist", () => {
+    return request(app)
+      .post("/api/reviews/999/comments")
+      .send({ username: "bainesface", body: "TEST_COMMENT" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Review not found");
+      });
+  });
+  test("404 responds with error if username does not exist", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "nonexistent_user", body: "TEST_COMMENT" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("");
+      });
+  });
 });
-
-//400 - 1) missing req. 2)invalid id
-//404 - 1) non existant id 2) psql error username doesnt exist
-//missing body or username

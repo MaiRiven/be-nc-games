@@ -37,6 +37,18 @@ const fetchReviewById = (reviewId) => {
       return review;
     });
 };
+const fetchCommentsByReviewId = (reviewId) => {
+  return db
+    .query(
+      `SELECT * FROM comments WHERE comments.review_id = $1
+      ORDER BY comments.created_at DESC;`,
+      [reviewId]
+    )
+    .then((res) => {
+      const comments = res.rows;
+      return comments;
+    });
+};
 
 const writeComment = (id, body) => {
   if (!body.body || !body.username) {
@@ -49,7 +61,9 @@ const writeComment = (id, body) => {
   const comment = body.body;
   return db
     .query(
-      `INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *`, [id, username, comment])
+      `INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
+      [id, username, comment]
+    )
     .then((res) => {
       return res.rows[0];
     });
@@ -60,4 +74,5 @@ module.exports = {
   fetchReviews,
   fetchReviewById,
   writeComment,
+  fetchCommentsByReviewId,
 };

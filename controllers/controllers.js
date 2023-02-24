@@ -2,6 +2,7 @@ const {
   fetchCategories,
   fetchReviewById,
   fetchReviews,
+  fetchCommentsByReviewId,
   writeComment,
 } = require("../models/models.js");
 
@@ -10,7 +11,7 @@ const getCategories = (req, res, next) => {
     .then((categories) => {
       res.status(200).send({ categories });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => next(err));
 };
 
 const getReviews = (req, res, next) => {
@@ -18,7 +19,7 @@ const getReviews = (req, res, next) => {
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => next(err));
 };
 
 const getReviewById = (req, res, next) => {
@@ -30,7 +31,19 @@ const getReviewById = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-const postComment = (req, res) => {
+const getCommentsByReviewId = (req, res, next) => {
+  const reviewId = req.params.review_id;
+  const checkArticle = fetchReviewById(reviewId);
+  const fetchingComments = fetchCommentsByReviewId(reviewId);
+
+  Promise.all([checkArticle, fetchingComments])
+    .then((commentData) => {
+      res.status(200).send({ comments: commentData[1] });
+    })
+    .catch((err) => next(err));
+};
+
+const postComment = (req, res, next) => {
   writeComment(req.params.review_id, req.body)
     .then((comment) => {
       res.status(201).send(comment);
@@ -38,4 +51,10 @@ const postComment = (req, res) => {
     .catch((err) => next(err));
 };
 
-module.exports = { getCategories, getReviews, getReviewById, postComment };
+module.exports = {
+  getCategories,
+  getReviews,
+  getReviewById,
+  postComment,
+  getCommentsByReviewId,
+};
