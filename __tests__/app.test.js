@@ -7,7 +7,7 @@ const seed = require("../db/seeds/seed");
 beforeEach(() => seed(data));
 afterAll(() => db.end());
 
-describe("categories bad paths", () => {
+describe("bad paths", () => {
   test("404 responds with path not found", () => {
     return request(app)
       .get("/anybadpath")
@@ -109,7 +109,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ username: "bainesface", body: "TEST COMMENT!" })
       .expect(201)
       .then(({ body }) => {
-        expect(body.body).toBe("TEST COMMENT!");
+        expect(body.comments).toBe("TEST COMMENT!");
       });
   });
   test("post 201, ignores any unnecessary content", () => {
@@ -118,7 +118,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ username: "bainesface", body: "TEST COMMENT!", fruit: "apples" })
       .expect(201)
       .then(({ body }) => {
-        expect(body.body).toBe("TEST COMMENT!");
+        expect(body.comments).toBe("TEST COMMENT!");
       });
   });
   test("400 responds with error if any missing required fields", () => {
@@ -132,11 +132,11 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
   test("404 responds with error if review_id does not exist", () => {
     return request(app)
-      .post("/api/reviews/999/comments")
+      .post("/api/reviews/9999/comments")
       .send({ username: "bainesface", body: "TEST_COMMENT" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Review doesn't exist");
+        expect(body.msg).toBe("Incorrect info");
       });
   });
   test("404 responds with error if username does not exist", () => {
@@ -145,13 +145,13 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ username: "nonexistent_user", body: "TEST_COMMENT" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Username does not exist");
+        expect(body.msg).toBe("Incorrect info");
       });
   });
   test("400 responds with error if id is not a string", () => {
     return request(app)
       .post("/api/reviews/one/comments")
-      .send({username: "bainesface", body: "TEST COMMENT!" })
+      .send({ username: "bainesface", body: "TEST COMMENT!" })
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid input");

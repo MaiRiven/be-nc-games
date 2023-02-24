@@ -59,7 +59,7 @@ const writeComment = (id, body) => {
       [id, username, comment]
     )
     .then((res) => {
-      return res.rows[0];
+      return res.rows[0].body;
     });
 };
 
