@@ -51,6 +51,7 @@ const updateVotes = (review_id, inc_votes) => {
     WHERE review_id = $2 RETURNING *`, [inc_votes, review_id])
     .then((res) => {
         const updatedReview = res.rows;
+        console.log(updateReviews);
         if(updatedReview.length === 0) {
             return Promise.reject({
                 status: 404, msg: "Review not found" });

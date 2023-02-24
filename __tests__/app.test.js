@@ -157,8 +157,8 @@ describe('GET /api/reviews/:review_id/comments', () => {
 });
 
 
-// describe.only('PATCH /api/reviews/:review_id', () => {
-//     test('200, returns the updated review object', () => {
+// describe('PATCH /api/reviews/:review_id', () => {
+//     test.only('200, returns the updated review object', () => {
 //         return request(app)
 //         .patch('/api/reviews/2')
 //         .send({inc_votes: 10})
