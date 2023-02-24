@@ -120,20 +120,29 @@ describe('GET /api/reviews/:review_id/comments', () => {
             });
         });
     });
-    test('responds with a 404 error if review_id is not found', () => {
+    test('200: responds with a message if there are no comments for the given review_id', () => {
         return request(app)
-        .get('/api/reviews/99/comments')
-        .expect(404)
+        .get('/api/reviews/1/comments')
+        .expect(200)
         .then(({ body }) => {
-        expect(body.msg).toBe('Review not found!');
+            const { comments } = body;
+            expect(comments).toEqual([]);
         });
     });
-    test('responds with a 400 error if review_id is not a number', () => {
+    test('404: responds with a message if review_id is not found', () => {
+        return request(app)
+        .get('/api/reviews/999/comments')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Review not found!');
+        });
+    });
+    test('400: responds with a message if review_id is not a number', () => {
         return request(app)
         .get('/api/reviews/not-a-number/comments')
         .expect(400)
         .then(({ body }) => {
-        expect(body.msg).toBe('Invalid input');
+            expect(body.msg).toBe('Invalid input');
         });
     });
     test('responds with an array of comments for the given review_id in most recent order', () => {
@@ -141,8 +150,8 @@ describe('GET /api/reviews/:review_id/comments', () => {
         .get('/api/reviews/2/comments')
         .expect(200)
         .then(({ body }) => {
-        const { comments } = body;
-        expect(comments).toBeSortedBy('created_at', {descending: true});
+            const { comments } = body;
+            expect(comments).toBeSortedBy('created_at', {descending: true});
         });
     });
 });

@@ -5,7 +5,7 @@ const getCategories = (req, res, next) => {
     .then(categories => {
         res.status(200).send({ categories });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => next(err));
 };
 
 const getReviews = (req, res, next) => {
@@ -13,7 +13,7 @@ const getReviews = (req, res, next) => {
     .then(reviews => {
         res.status(200).send({ reviews });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => next(err));
 };
 
 const getReviewById = (req, res, next) => { 
@@ -27,12 +27,13 @@ const getReviewById = (req, res, next) => {
 
 const getCommentsByReviewId = (req, res, next) => { 
     const reviewId = req.params.review_id;
-    fetchCommentsByReviewId(reviewId)
-    .then((comments) => {
-        res.status(200).send({ comments });
+    const checkArticle = fetchReviewById(reviewId);
+    const fetchingComments = fetchCommentsByReviewId(reviewId);
+
+    Promise.all([checkArticle, fetchingComments]).then((commentData) => {
+        res.status(200).send({ comments: commentData[1] });
     })
     .catch((err) => next(err));
-};  
-
+  };      
 
 module.exports = { getCategories, getReviews, getReviewById, getCommentsByReviewId };
