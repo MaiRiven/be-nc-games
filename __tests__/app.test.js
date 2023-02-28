@@ -206,7 +206,7 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(res.body.msg).toBe("Review not found");
       });
   });
-  test("status:404, returns an error message when review_id is not a num", () => {
+  test("status:400, returns an error message when review_id is not a num", () => {
     return request(app)
       .patch("/api/reviews/two")
       .send({ inc_votes: 10 })
@@ -215,4 +215,6 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(res.body.msg).toBe("Invalid input");
       });
   });
+  //what happens if no inc_votes or mispelled inc_votes
+  //400 x2 missing param and mispelled param
 });
