@@ -215,6 +215,4 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(res.body.msg).toBe("Invalid input");
       });
   });
-  //what happens if no inc_votes or mispelled inc_votes
-  //400 x2 missing param and mispelled param
 });
