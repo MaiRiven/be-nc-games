@@ -270,6 +270,31 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid input");
+    });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: responds with array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
       });
+    });
+  });
+  test("400: responds with error when bad path", () => {
+    return request(app)
+      .get("/api/usurs")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found! >:(");
+    });
   });
 });
