@@ -209,6 +209,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
+        console.log(body);
         const { comments } = body;
         expect(Array.isArray(comments)).toBe(true);
         comments.forEach((comment) => {
@@ -391,4 +392,27 @@ describe("GET /api/users", () => {
         expect(body.msg).toBe("Path not found! >:(");
       });
   });
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes comment and returns no content", () => {
+    const commentIdToDelete = 5;
+    return request(app)
+      .delete(`/api/comments/${commentIdToDelete}`)
+      .expect(204)
+      .then(() => {
+        return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [commentIdToDelete]);})
+      .then((res) => {
+        expect(res.rows.length).toBe(0);
+      });
+  });
+//   test("404: responds with error when comment not found", () => {
+//     const commentIdToDelete = 999;
+//     return request(app)
+//       .delete(`/api/comments/${commentIdToDelete}`)
+//       .expect(404)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("Bad request");
+//       });
+//   });
 });

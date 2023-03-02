@@ -7,6 +7,7 @@ const {
   postComment,
   increaseVotes,
   getUsers,
+  deleteComment,
 } = require("./controllers/controllers.js");
 const {
   handle500Statuses,
@@ -31,6 +32,8 @@ app.post("/api/reviews/:review_id/comments", postComment);
 app.patch('/api/reviews/:review_id', increaseVotes);
 
 app.get('/api/users', getUsers);
+
+app.delete('/api/comments/:comment_id', deleteComment); 
 
 app.use(handleCustomeErrors);
 app.use(handlePsqlErrors);

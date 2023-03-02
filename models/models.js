@@ -49,10 +49,10 @@ const fetchReviewById = (reviewId) => {
           msg: "Review not found!",
         });
       }
-      const reviewWithCommentCount = Object.assign({}, review[0]); // make a copy of the review object
+      const reviewWithCommentCount = Object.assign({}, review[0]);
       return db.query(`SELECT COUNT(*) FROM comments WHERE review_id = $1`, [reviewId])
         .then((res) => {
-          reviewWithCommentCount.comment_count = parseInt(res.rows[0].count) || 0; // add the comment count to the review object
+          reviewWithCommentCount.comment_count = parseInt(res.rows[0].count) || 0;
           return reviewWithCommentCount;
     });
   })
@@ -111,6 +111,10 @@ const fetchUsers = () => {
   });
 };
 
+const eraseComment = (comment_id) => {
+  return db.query(`DELETE FROM comments WHERE comment_id = $1`, [comment_id]);
+}
+
 module.exports = {
   fetchCategories,
   fetchReviews,
@@ -119,4 +123,5 @@ module.exports = {
   fetchCommentsByReviewId,
   updateVotes,
   fetchUsers,
+  eraseComment,
 };
