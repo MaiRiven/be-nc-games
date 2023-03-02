@@ -160,25 +160,48 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("votes", expect.any(Number));
         expect(review).toHaveProperty("designer", expect.any(String));
         expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("comment_count", expect.any(Number));
+      });
+  });
+  test("responds with the correct review object", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        const { review } = body;
+        expect(review).toHaveProperty("comment_count", expect.any(Number));
+        expect(review.comment_count).toBe(3);
+      });
+  });
+  test("responds with a 404 error if review_id is not found", () => {
+    return request(app)
+      .get("/api/reviews/999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Review not found!");
+      });
+  });
+  test("responds with a 400 error if review_id is not a number", () => {
+    return request(app)
+      .get("/api/reviews/not-a-number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+    });
+  });
+  test("responds with a comment count of 0 if the review has no comments", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toHaveProperty("comment_count");
+        expect(review.comment_count).toBe(0);
       });
   });
 });
-test("responds with a 404 error if review_id is not found", () => {
-  return request(app)
-    .get("/api/reviews/999999")
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe("Review not found!");
-    });
-});
-test("responds with a 400 error if review_id is not a number", () => {
-  return request(app)
-    .get("/api/reviews/not-a-number")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe("Invalid input");
-    });
-});
+
 
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200: responds with an array of comments for the given review_id", () => {

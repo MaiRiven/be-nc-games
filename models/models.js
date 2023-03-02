@@ -12,7 +12,7 @@ const fetchReviews = (category, sort_by, order) => {
     'owner', 'title', 'review_id', 'category', 'created_at',
     'votes', 'designer', 'comment_count'
   ];
-  
+
   if (!validColumns.includes(sort_by)) {
     return Promise.reject({
       status: 400,
@@ -49,9 +49,15 @@ const fetchReviewById = (reviewId) => {
           msg: "Review not found!",
         });
       }
-      return review[0];
+      const reviewWithCommentCount = Object.assign({}, review[0]); // make a copy of the review object
+      return db.query(`SELECT COUNT(*) FROM comments WHERE review_id = $1`, [reviewId])
+        .then((res) => {
+          reviewWithCommentCount.comment_count = parseInt(res.rows[0].count) || 0; // add the comment count to the review object
+          return reviewWithCommentCount;
     });
+  })
 };
+
 const fetchCommentsByReviewId = (reviewId) => {
   return db
     .query(
