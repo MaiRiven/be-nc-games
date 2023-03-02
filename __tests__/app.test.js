@@ -55,13 +55,91 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  test("responses are ordered by date", () => {
+  test("responses are ordered by descending date", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        expect(reviews).toBeSortedBy("created_at", { descending: false });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200: sorts the reviews correctly by sort_by and order parameters", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy("owner", { ascending: true });
+      });
+  });
+  test("200: filters the reviews correctly by category parameter", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(1);
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("category", "dexterity");
+        });
+      });
+  });
+  test("200: filters the reviews correctly by category parameter with a space", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(11);
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("category", "social deduction");
+        });
+      });
+  });
+  test("200: responds with an array of comments for the given review_id in most recent order", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200: responds with reviews sorted by a specific column in ascending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy("votes", { ascending: true });
+      });
+  });
+  test("200: responds with reviews sorted by a specific column in descending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes&order=desc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  test("400: responds with an error message when given an invalid sort_by query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=invalid_column")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("400: responds with an error message when given an invalid order query", () => {
+    return request(app)
+      .get("/api/reviews?order=invalid_order")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
       });
   });
 });
@@ -120,7 +198,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test("200: responds with a message if there are no comments for the given review_id", () => {
+  test("200: responds with an empty array if there are no comments for the given review_id", () => {
     return request(app)
       .get("/api/reviews/1/comments")
       .expect(200)
@@ -143,15 +221,6 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid input");
-      });
-  });
-  test("responds with an array of comments for the given review_id in most recent order", () => {
-    return request(app)
-      .get("/api/reviews/2/comments")
-      .expect(200)
-      .then(({ body }) => {
-        const { comments } = body;
-        expect(comments).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
@@ -181,7 +250,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ body: "TEST COMMENT!" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Missing info");
+        expect(body.msg).toBe("Bad Request");
       });
   });
   test("404 responds with error if review_id does not exist", () => {
@@ -222,16 +291,17 @@ describe("PATCH /api/reviews/:review_id", () => {
       .then((res) => {
         const review = JSON.parse(res.text).review[0];
         expect(review).toMatchObject({
-            review_id: 2,
-            title: 'Jenga',
-            category: 'dexterity',
-            designer: 'Leslie Scott',
-            owner: 'philippaclaire9',
-            review_body: 'Fiddly fun for all the family',
-            review_img_url: 'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
-            created_at: '2021-01-18T10:01:41.251Z',
-            votes: 15
-          });
+          review_id: 2,
+          title: "Jenga",
+          category: "dexterity",
+          designer: "Leslie Scott",
+          owner: "philippaclaire9",
+          review_body: "Fiddly fun for all the family",
+          review_img_url:
+            "https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700",
+          created_at: "2021-01-18T10:01:41.251Z",
+          votes: 15,
+        });
       });
   });
   test("200, returns the updated review object when inc_votes is negative", () => {
@@ -242,16 +312,17 @@ describe("PATCH /api/reviews/:review_id", () => {
       .then((res) => {
         const review = JSON.parse(res.text).review[0];
         expect(review).toMatchObject({
-            review_id: 2,
-            title: 'Jenga',
-            category: 'dexterity',
-            designer: 'Leslie Scott',
-            owner: 'philippaclaire9',
-            review_body: 'Fiddly fun for all the family',
-            review_img_url: 'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
-            created_at: '2021-01-18T10:01:41.251Z',
-            votes: 2
-          })
+          review_id: 2,
+          title: "Jenga",
+          category: "dexterity",
+          designer: "Leslie Scott",
+          owner: "philippaclaire9",
+          review_body: "Fiddly fun for all the family",
+          review_img_url:
+            "https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700",
+          created_at: "2021-01-18T10:01:41.251Z",
+          votes: 2,
+        });
       });
   });
   test("status:404, returns an error message when review_id does not exist", () => {
@@ -270,7 +341,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid input");
-    });
+      });
   });
 });
 
@@ -286,8 +357,8 @@ describe("GET /api/users", () => {
           expect(user).toHaveProperty("username", expect.any(String));
           expect(user).toHaveProperty("name", expect.any(String));
           expect(user).toHaveProperty("avatar_url", expect.any(String));
+        });
       });
-    });
   });
   test("400: responds with error when bad path", () => {
     return request(app)
@@ -295,6 +366,6 @@ describe("GET /api/users", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Path not found! >:(");
-    });
+      });
   });
 });

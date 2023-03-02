@@ -7,16 +7,31 @@ const fetchCategories = () => {
   });
 };
 
-const fetchReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, 
-    reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, 
-    COUNT(comments.comment_id) AS comment_count FROM reviews 
-    LEFT JOIN comments ON comments.review_id = reviews.review_id
-    GROUP BY reviews.review_id
-    ORDER BY reviews.created_at;`
-    )
+const fetchReviews = (category, sort_by, order) => {
+  const validColumns = [
+    'owner', 'title', 'review_id', 'category', 'created_at',
+    'votes', 'designer', 'comment_count'
+  ];
+  
+  if (!validColumns.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  };
+
+  const query = {
+    text: `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, 
+      reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, 
+      COUNT(comments.comment_id) AS comment_count FROM reviews 
+      LEFT JOIN comments ON comments.review_id = reviews.review_id
+      WHERE ($1::text IS NULL OR reviews.category = $1)
+      GROUP BY reviews.review_id
+      ORDER BY ${sort_by} ${order};`,
+    values: [category],
+  };
+
+  return db.query(query)
     .then((res) => {
       const reviewRows = res.rows;
       return reviewRows;
