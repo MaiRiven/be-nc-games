@@ -95,9 +95,9 @@ const deleteComment = (req, res, next) => {
 //   { path: "/api/comments/:comment_id", method: "DELETE", description: "Deletes the specified comment" },
 // ];
 
-// const getApi = (req, res, next) => {
-//   res.status(200).json({ endpoints: apiEndpoints });
-// };
+const getApi = (req, res, next) => {
+  res.status(200).json({ endpoints: apiEndpoints });
+};
 
 module.exports = {
   getCategories,
