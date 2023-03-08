@@ -416,3 +416,11 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+xdescribe('GET /api', () => {
+  it('responds with a JSON object describing all the available endpoints', async () => {
+    const res = await request(app).get('/api').expect(200);
+    console.log(res.body, "here");
+    expect(res.body).toEqual(apiEndpoints);
+  });
+});

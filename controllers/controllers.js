@@ -84,6 +84,21 @@ const deleteComment = (req, res, next) => {
     });
 };
 
+// const apiEndpoints = [
+//   { path: "/api", method: "GET", description: "Returns a JSON describing all the available endpoints on the API" },
+//   { path: "/api/categories", method: "GET", description: "Returns an array of all categories" },
+//   { path: "/api/reviews/:review_id", method: "GET", description: "Returns the review by ID" },
+//   { path: "/api/reviews/:review_id/comments", method: "GET", description: "Returns an array of all comments on the chosen review" },
+//   { path: "/api/reviews/:review_id/comments", method: "POST", description: "Adds a comment onto a chosen review" },
+//   { path: "/api/reviews/:review_id", method: "PATCH", description: "Updates the votes on a review" },
+//   { path: "/api/users", method: "GET", description: "Returns an array of all users" },
+//   { path: "/api/comments/:comment_id", method: "DELETE", description: "Deletes the specified comment" },
+// ];
+
+// const getApi = (req, res, next) => {
+//   res.status(200).json({ endpoints: apiEndpoints });
+// };
+
 module.exports = {
   getCategories,
   getReviews,
@@ -93,4 +108,5 @@ module.exports = {
   increaseVotes,
   getUsers,
   deleteComment,
+  getApi
 };
