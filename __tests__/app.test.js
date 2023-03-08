@@ -168,7 +168,6 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/3")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         const { review } = body;
         expect(review).toHaveProperty("comment_count", expect.any(Number));
         expect(review.comment_count).toBe(3);
@@ -188,7 +187,7 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid input");
-    });
+      });
   });
   test("responds with a comment count of 0 if the review has no comments", () => {
     return request(app)
@@ -202,14 +201,12 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200: responds with an array of comments for the given review_id", () => {
     return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         const { comments } = body;
         expect(Array.isArray(comments)).toBe(true);
         comments.forEach((comment) => {
@@ -394,25 +391,28 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes comment and returns no content", () => {
     const commentIdToDelete = 5;
     return request(app)
       .delete(`/api/comments/${commentIdToDelete}`)
       .expect(204)
       .then(() => {
-        return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [commentIdToDelete]);})
+        return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [
+          commentIdToDelete,
+        ]);
+      })
       .then((res) => {
         expect(res.rows.length).toBe(0);
       });
   });
-//   test("404: responds with error when comment not found", () => {
-//     const commentIdToDelete = 999;
-//     return request(app)
-//       .delete(`/api/comments/${commentIdToDelete}`)
-//       .expect(404)
-//       .then(({ body }) => {
-//         expect(body.msg).toBe("Bad request");
-//       });
-//   });
+  // test("404: responds with error when comment not found", () => {
+  //   const commentIdToDelete = 999;
+  //   return request(app)
+  //     .delete(`/api/comments/${commentIdToDelete}`)
+  //     .expect(404)
+  //     .then(({ body }) => {
+  //       expect(body.msg).toBe("Bad request");
+  //     });
+  // });
 });
