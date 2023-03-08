@@ -11,7 +11,7 @@ const {
 } = require("./controllers/controllers.js");
 const {
   handle500Statuses,
-  handleCustomeErrors,
+  handleCustomErrors,
   handlePsqlErrors,
 } = require("./controllers/error-handling");
 
@@ -33,9 +33,9 @@ app.patch('/api/reviews/:review_id', increaseVotes);
 
 app.get('/api/users', getUsers);
 
-app.delete('/api/comments/:comment_id', deleteComment); 
+app.delete('/api/comments/:comment_id', deleteComment);
 
-app.use(handleCustomeErrors);
+app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
 app.use(handle500Statuses);
 

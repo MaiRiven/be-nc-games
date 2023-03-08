@@ -406,13 +406,13 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(res.rows.length).toBe(0);
       });
   });
-  // test("404: responds with error when comment not found", () => {
-  //   const commentIdToDelete = 999;
-  //   return request(app)
-  //     .delete(`/api/comments/${commentIdToDelete}`)
-  //     .expect(404)
-  //     .then(({ body }) => {
-  //       expect(body.msg).toBe("Bad request");
-  //     });
-  // });
+  test("404: responds with error when comment not found", () => {
+    const commentIdToDelete = 99999;
+    return request(app)
+      .delete(`/api/comments/${commentIdToDelete}`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 });
